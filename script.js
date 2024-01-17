@@ -123,7 +123,7 @@ const renderCountry = function (data, className = " ") {
         <span>👫</span>${(data.population / 1000000).toFixed(1)} people
       </p>
       <p class="country__row">
-        <span>🗣️</span>${data.languages.swa}
+        <span>🗣️</span>${data}
       </p>
       <p class="country__row">
         <span>💰</span>${data.currencies.name}
@@ -159,7 +159,10 @@ const getCountryData = function (country) {
 
       return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) throw new Error(`country not found ${response.status}`);
+      return response.json();
+    })
     .then((data) => renderCountry(data[0], "neighbour"))
     .catch((err) => {
       console.error(`${err}`);
@@ -173,3 +176,4 @@ const getCountryData = function (country) {
 btn.addEventListener("click", function () {
   getCountryData("haiti");
 });
+getCountryData("hanfhftr");
