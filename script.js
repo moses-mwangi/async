@@ -146,10 +146,17 @@ const renderCountry = function (data, className = " ") {
       renderCountry(data[0]);
     });
 };*/
+const getJSON = function (url,err='') {
+  fetch(url).then((response) => {
+    if (!response.ok) throw new Error(`country not found (${response.status})`);
+    return response.json();
+  });
+};
 
 const getCountryData = function (country) {
-  fetch(`https://restcountries.com/v3.1/name/${country}`)
-    .then((response) => response.json())
+  getJSON(`https://restcountries.com/v3.1/name/${country}`,'country not found')
+   
+    }
 
     .then((data) => {
       console.log(data);
@@ -157,12 +164,10 @@ const getCountryData = function (country) {
       const neighbour = data[0].borders[0];
       if (!neighbour) return;
 
-      return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+      return getJSON(`https://restcountries.com/v3.1/alpha/${neighbour}`,'country not found');
     })
-    .then((response) => {
-      if (!response.ok) throw new Error(`country not found ${response.status}`);
-      return response.json();
-    })
+  
+    
     .then((data) => renderCountry(data[0], "neighbour"))
     .catch((err) => {
       console.error(`${err}`);
@@ -172,8 +177,35 @@ const getCountryData = function (country) {
       countriesContainer.style.opacity = 1;
     });
 };
+// const getCountryData = function (country) {
+//   fetch(`https://restcountries.com/v3.1/name/${country}`)
+//     .then((response) => {
+//       if (!response.ok)
+//         throw new Error(`country not found (${response.status})`);
+//       return response.json();
+//     })
+
+//     .then((data) => {
+//       console.log(data);
+//       renderCountry(data[0]);
+//       const neighbour = data[0].borders[0];
+//       if (!neighbour) return;
+
+//       return fetch(`https://restcountries.com/v3.1/alpha/${neighbour}`);
+//     })
+//     .then((response) => {
+//       return response.json();
+//     })
+//     .then((data) => renderCountry(data[0], "neighbour"))
+//     .catch((err) => {
+//       console.error(`${err}`);
+//       renderError(`somothing went wrong ${err.message}.Try again later`);
+//     })
+//     .finally(() => {
+//       countriesContainer.style.opacity = 1;
+//     });
+// };
 
 btn.addEventListener("click", function () {
   getCountryData("haiti");
 });
-getCountryData("hanfhftr");
