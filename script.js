@@ -105,7 +105,8 @@ getCountryAndNeighbour("usa");
 //   const request = new XMLHttpRequest();
 //   request.open("GET", `https://restcountries.com/v3.1/name/${country}`);
 //   request.send();
-
+///////////////////////////////////////////////////////////////////////////////////////////
+/*
 const renderCountry = function (data, className = " ") {
   const html = ` <article class="country ${className}">
     <img class="country__img" src="${data.flags.png}" />
@@ -126,6 +127,7 @@ const renderCountry = function (data, className = " ") {
   `;
   countriesContainer.insertAdjacentHTML("beforeend", html);
 };
+*/
 //   countriesContainer.style.opacity = 1;
 
 /*const getCountryData = function (country) {
@@ -225,6 +227,7 @@ whereAmI(52.508, 13.381);
 // Promise.resolve("callback from a promise").then((arr) => console.log(arr));
 // console.log("test 2");
 
+/*
 const lottery = new Promise(function (resolve, reject) {
   console.log("lotter draw is happening now");
   setTimeout(function () {
@@ -272,8 +275,9 @@ const getPosition = function () {
   });
 };
 getPosition().then((pos) => console.log(pos));
+*/
 ////////////////////////////////////
-
+/*
 const errad = function (realERR) {
   realERR;
 };
@@ -313,3 +317,49 @@ const whereAmI = function () {
 btn.addEventListener("click", function () {
   whereAmI();
 });
+*/
+/*
+const imageContainer = document.querySelector(".images");
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+// wait(2).then(() => console.log("hello mom"));
+
+const creatImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement("img");
+    img.src = imgPath;
+    img.addEventListener("load", function () {
+      imageContainer.append(img);
+    });
+    img.addEventListener("error", function () {
+      reject(new Error("image not found"));
+    });
+  });
+};
+
+let image;
+creatImage("/async/img/img-1.jpg")
+  .then((img) => {
+    image = img;
+    console.log("image 1 is loaded");
+    return wait(2);
+  })
+  .then(() => {
+    image.style.display = "none";
+    return creatImage("/async/img/img-2.jpg");
+  })
+  .then((img) => {
+    image = img;
+    console.log("image 2");
+    return wait(2);
+  })
+  .then(() => {
+    image.style.display = "none";
+  });*/
+
+const whereAmI = async function (country) {};
