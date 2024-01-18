@@ -362,6 +362,7 @@ creatImage("/async/img/img-1.jpg")
     image.style.display = "none";
   });*/
 
+/*
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(
@@ -419,7 +420,8 @@ console.log("1 first executed");
   }
 })();
 console.log("3 first executed");
-
+*/
+/*
 const getJSON = async function (url, errorMsg = "Something went wrong") {
   // return fetch(url).then((response) => {
   //   if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
@@ -446,3 +448,100 @@ const get3Country = async function (c1, c2, c3) {
   } catch (err) {}
 };
 get3Country("kenya", "uganda", "burundi");
+
+(async function () {
+  const data = await Promise.race([
+    getJSON(`https://restcountries.com/v3.1/name/tanzania`),
+    getJSON(`https://restcountries.com/v3.1/name/kenya`),
+    getJSON(`https://restcountries.com/v3.1/name/congo`),
+  ]);
+  console.log(data[0]);
+})();
+
+const timeOut = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error("took too long to load"));
+    }, sec * 1000);
+  });
+};
+Promise.race([
+  getJSON(`https://restcountries.com/v3.1/name/uganda`),
+  timeOut(0.2),
+])
+  .then((res) => console.log(res[0]))
+  .catch((err) => console.error(err.message));
+
+const loadPause = async function ([im1, im2, im3]) {
+  try {
+    new Promise(function (resolve, reject) {
+      const img = document.createElement("img");
+      img.src = imgPath;
+      img.addEventListener("load", function () {
+        imageContainer.append(img);
+      });
+    });
+  } catch (err) {}
+};
+loadPause();
+*/
+///////////////////////////////////////////////////////////////////////////////////////////
+const imageContainer = document.querySelector(".images");
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+// wait(2).then(() => console.log("hello mom"));
+
+const creatImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement("img");
+    img.src = imgPath;
+    img.addEventListener("load", function () {
+      imageContainer.append(img);
+    });
+    img.addEventListener("error", function () {
+      reject(new Error("image not found"));
+    });
+  });
+};
+
+const loadPause = async function () {
+  try {
+    let img = creatImage("/async/img/img-1.jpg");
+
+    console.log("Image 1 loaded");
+    await wait(2);
+    img.style.display = "none";
+
+    //// img 2
+    img = creatImage("/async/img/img-2.jpg");
+    console.log("Image 2 loaded");
+    await wait(2);
+    img.style.display = "none";
+  } catch (err) {}
+};
+loadPause();
+
+// loadAll(["/async/img/img-1.jpg", "/async/img/img-2.jpg"]);
+/*
+  .then((img) => {
+    image = img;
+    console.log("image 1 is loade");
+    return wait(2);
+  })
+  .then(() => {
+    image.style.display = "none";
+    return creatImage("/async/img/img-2.jpg");
+  })
+  .then((img) => {
+    image = img;
+    console.log("image 2");
+    return wait(2);
+  })
+  .then(() => {
+    image.style.display = "none";
+  });*/
