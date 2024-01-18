@@ -106,7 +106,7 @@ getCountryAndNeighbour("usa");
 //   request.open("GET", `https://restcountries.com/v3.1/name/${country}`);
 //   request.send();
 ///////////////////////////////////////////////////////////////////////////////////////////
-/*
+
 const renderCountry = function (data, className = " ") {
   const html = ` <article class="country ${className}">
     <img class="country__img" src="${data.flags.png}" />
@@ -120,14 +120,14 @@ const renderCountry = function (data, className = " ") {
         <span>🗣️</span>${data.languages.swa}
       </p>
       <p class="country__row">
-        <span>💰</span>${data.currencies.name}
+        <span>💰</span>${data.currencies.KES.name}
       </p>
     </div>
   </article>;
   `;
   countriesContainer.insertAdjacentHTML("beforeend", html);
 };
-*/
+
 //   countriesContainer.style.opacity = 1;
 
 /*const getCountryData = function (country) {
@@ -362,4 +362,87 @@ creatImage("/async/img/img-1.jpg")
     image.style.display = "none";
   });*/
 
-const whereAmI = async function (country) {};
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => resolve(position),
+      (err) => reject(err)
+    );
+  });
+};
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText("beforeend", msg);
+  //   countriesContainer.style.opacity = 1;
+};
+
+const whereAmI = async function () {
+  try {
+    const pos = await getPosition();
+
+    const { latitude: lat, longitude: lang } = pos.coords;
+
+    const home = await fetch(`https://geocode.xyz/${lat},${lang}?geoit=json`);
+    if (!home.ok) throw new Error("problem with location data");
+
+    const homeCode = await home.json();
+
+    const res = await fetch(
+      `https://restcountries.com/v3.1/name/${homeCode.country}`
+    );
+    if (!res.ok) throw new Error("problem with location data");
+    console.log(res);
+    const code = await res.json();
+
+    renderCountry(code[0]);
+    return `im in ${code[0].capital[0]},${code[0].altSpellings[1]}`;
+  } catch (err) {
+    console.error(err);
+    renderError(`something went wrong ${err.message}`);
+    throw err;
+  }
+};
+console.log("1 first executed");
+// const loca = whereAmI().then((city) => console.log(city));
+// console.log(loca);
+// whereAmI()
+//   .then((city) => console.log(city))
+//   .catch((err) => console.log(`1:${err.message}`));
+// console.log("2 first executed");
+
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2:${city}`);
+  } catch (err) {
+    console.log(`1:${err.message}`);
+  }
+})();
+console.log("3 first executed");
+
+const getJSON = async function (url, errorMsg = "Something went wrong") {
+  // return fetch(url).then((response) => {
+  //   if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+
+  return response.json();
+  // });
+};
+
+const get3Country = async function (c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v3.1/name/${c3}`);
+    // console.log([data1.capital[0], data2.capital[0], data3.capital[0]]);
+
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+    ]);
+    console.log(data.map((d) => d[0].capital[0]));
+  } catch (err) {}
+};
+get3Country("kenya", "uganda", "burundi");
