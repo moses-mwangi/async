@@ -545,3 +545,17 @@ loadPause();
   .then(() => {
     image.style.display = "none";
   });*/
+
+const func = async function (country) {
+  try {
+    const res = await fetch(`https://restcountries.com/v3.1/name/${country}`);
+    console.log(res);
+    if (!res.ok) throw new Error("country not found");
+    // res.json();
+    const data = await res.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err.message);
+  }
+};
+func("kenya");
